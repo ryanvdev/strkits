@@ -1,4 +1,4 @@
-import pyRange from 'py-range-ts';
+import { pyRange } from 'py-range-ts';
 
 export type Separator = ' ' | '-' | '_';
 
@@ -333,11 +333,63 @@ export function transformToTitleCase(subject: string, separator: ' ' | '-' | '_'
     return processedStrings.join(EMPTY_STRING);
 }
 
-const StrKits = Object.freeze({
+export type ReplaceRangeConfig = {
+    start: number;
+    end: number;
+    value: string;
+};
+function isValidReplaceRangeArgs(args: ReplaceRangeConfig[], max: number) {
+    if (args[0].start < 0) return false;
+    if (args[args.length - 1].end > max) return false;
+
+    let previous: number = 0;
+
+    for (const { start, end } of args) {
+        if (start > end || previous > start) return false;
+
+        previous = end;
+    }
+
+    return true;
+}
+
+export function replaceRange(subject: string, args: ReplaceRangeConfig[]) {
+    if (args.length === 0) return subject;
+
+    const argsCopy = [...args];
+
+    argsCopy.sort(({ start: a }, { start: b }) => {
+        if (a > b) return 1;
+        if (a < b) return -1;
+        return 0;
+    });
+
+    if (!isValidReplaceRangeArgs(argsCopy, subject.length)) {
+        throw new Error('[replaceRange] Invalid args');
+    }
+
+    const results: string[] = [];
+    let previous: number = 0;
+
+    for (const { start, end, value: newValue } of argsCopy) {
+        results.push(subject.slice(previous, start));
+        results.push(newValue);
+        previous = end;
+    }
+
+    if (previous < subject.length) {
+        results.push(subject.slice(previous, subject.length));
+    }
+
+    return results.join('');
+}
+
+export const StrKits = Object.freeze({
     isUpperCase,
     isSpecialCharacter,
     strip,
     removedMultiplesCharacters,
+    replaceRange,
     transform: Object.freeze({
         toCamelCase: transformToCamelCase,
         toPascalCase: transformToPascalCase,

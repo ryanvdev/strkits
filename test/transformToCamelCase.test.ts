@@ -1,6 +1,5 @@
-// import S from '../lib';
-
-import StrKits from '../lib';
+import { describe, test, expect } from 'vitest';
+import StrKits from '../src';
 
 const subjects: [string, string][] = [
     ['transformToCamelCase', 'transformToCamelCase'],
