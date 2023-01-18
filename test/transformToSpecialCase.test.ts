@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { transformToSpecialCase } from '../src';
 
 const testFn = transformToSpecialCase;

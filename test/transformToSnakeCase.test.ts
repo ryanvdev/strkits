@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import { transformToSnakeCase } from '../src';
 
 const subjects: [string, string][] = [
