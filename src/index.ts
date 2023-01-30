@@ -384,12 +384,27 @@ export function replaceRange(subject: string, args: ReplaceRangeConfig[]) {
     return results.join('');
 }
 
+export function getLineBreakChar(subject: string) {
+    const indexOfLF = subject.indexOf('\n', 1);
+
+    if (indexOfLF === -1) {
+        if (subject.indexOf('\r') !== -1) return '\r';
+
+        return '\n';
+    }
+
+    if (subject[indexOfLF - 1] === '\r') return '\r\n';
+
+    return '\n';
+}
+
 export const StrKits = Object.freeze({
     isUpperCase,
     isSpecialCharacter,
     strip,
     removedMultiplesCharacters,
     replaceRange,
+    getLineBreakChar,
     transform: Object.freeze({
         toCamelCase: transformToCamelCase,
         toPascalCase: transformToPascalCase,
